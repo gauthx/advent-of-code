@@ -82,27 +82,39 @@ const printAddress = (intCodes, index, opCode, inputModes) => {
 };
 
 const jumpIfTrue = (intCodes, index, opCode, inputModes) => {
-  const [modeOfParam1,modeOfParam2] = inputModes;
+  const [modeOfParam1, modeOfParam2] = inputModes;
   const valueIndex1 = index + 1;
   const valueIndex2 = index + 2;
   const actualIndex1 = getAddress(modeOfParam1, valueIndex1, intCodes);
   const actualIndex2 = getAddress(modeOfParam2, valueIndex2, intCodes);
+  console.log({ valueIndex2, actualIndex2, valueIndex1, actualIndex1 });
+
   if (intCodes[actualIndex1] !== 0) {
-    return { intCodes, pointerDelta: actualIndex2 - index };
+    return { intCodes, pointerDelta: actualIndex2 - index + 1 };
   }
   return { intCodes, pointerDelta: 3 };
 };
 
-const jumpIfFalse = (intCodes, index, opCode, inputModes) => {
-   const [modeOfParam1,modeOfParam2] = inputModes;
+const   jumpIfFalse = (intCodes, index, opCode, inputModes) => {
+  const [modeOfParam1, modeOfParam2] = inputModes;
   const valueIndex1 = index + 1;
   const valueIndex2 = index + 2;
   const actualIndex1 = getAddress(modeOfParam1, valueIndex1, intCodes);
   const actualIndex2 = getAddress(modeOfParam2, valueIndex2, intCodes);
 
-  console.log("Inside jumpiffalse",{modeOfParam1,modeOfParam2,index,valueIndex1,valueIndex2,actualIndex1,actualIndex2})
+  console.log("Inside jumpiffalse", {
+    modeOfParam1,
+    modeOfParam2,
+    index,
+    valueIndex1,
+    valueIndex2,
+    actualIndex1,
+    actualIndex2,
+  });
+
   if (intCodes[actualIndex1] === 0) {
-    return { intCodes, pointerDelta: actualIndex2 - index };
+    console.log("Inside if", actualIndex2 - index)
+    return { intCodes, pointerDelta: actualIndex2 - index + 1};
   }
   return { intCodes, pointerDelta: 3 };
 };
@@ -120,13 +132,10 @@ const isLessThan = (codes, index, opCode, inputModes) => {
     poisitionToInsert,
     intCodes,
   );
-  console.log({ actualIndex1, actualIndex2, poisitionToInsert });
+  // console.log({ actualIndex1, actualIndex2, poisitionToInsert });
 
-  if (intCodes[actualIndex1] < intCodes[actualIndex2]) {
-    intCodes[actualPositionToInsert] = 1;
-    return { intCodes, pointerDelta: 4 };
-  }
-  intCodes[actualPositionToInsert] = 0;
+  const valueToInsert = intCodes[actualIndex1] < intCodes[actualIndex2] ? 1 : 0;
+  intCodes[actualPositionToInsert] = valueToInsert;
   return { intCodes, pointerDelta: 4 };
 };
 
@@ -143,13 +152,13 @@ const areEqual = (codes, index, opCode, inputModes) => {
     poisitionToInsert,
     intCodes,
   );
-  console.log({ actualIndex1, actualIndex2, poisitionToInsert });
+  // console.log({ actualIndex1, actualIndex2, poisitionToInsert });
 
-  if (intCodes[actualIndex1] === intCodes[actualIndex2]) {
-    intCodes[actualPositionToInsert] = 1;
-    return { intCodes, pointerDelta: 4 };
-  }
-  intCodes[actualPositionToInsert] = 0;
+  const valueToInsert = intCodes[actualIndex1] === intCodes[actualIndex2]
+    ? 1
+    : 0;
+  intCodes[actualPositionToInsert] = valueToInsert;
+
   return { intCodes, pointerDelta: 4 };
 };
 
@@ -173,19 +182,67 @@ const stringsToNumbers = (array) => array.map((x) => parseInt(x));
 const main = () => {
   // const fileContents = Deno.readTextFileSync("./input.txt");
   // let intCodes = stringsToNumbers(fileContents.split(","));
-  let intCodes = [3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,
-1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,
-999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99];
+  let intCodes = [
+    3,
+    21,
+    1008,
+    21,
+    8,
+    20,
+    1005,
+    20,
+    22,
+    107,
+    8,
+    21,
+    20,
+    1006,
+    20,
+    31,
+    1106,
+    0,
+    36,
+    98,
+    0,
+    0,
+    1002,
+    21,
+    125,
+    20,
+    4,
+    20,
+    1105,
+    1,
+    46,
+    104,
+    999,
+    1105,
+    1,
+    46,
+    1101,
+    1000,
+    1,
+    20,
+    4,
+    20,
+    1105,
+    1,
+    46,
+    98,
+    99,
+  ];
   let pointer = 0;
   // console.log("provided intCodes", intCodes);
-  console.log("given intcode", intCodes,"\n\n\n");
+  console.log("given intcode", intCodes, "\n\n\n");
 
   while (pointer < intCodes.length) {
+    console.log({ pointer, currentInstruction: intCodes[pointer] });
+
     const instruction = intCodes[pointer];
     if (instruction === 99) {
       break;
     }
-    // console.log({ intCodes });
+    console.log({ intCodes });
     const parsed = parseInstruction(instruction);
     const inputModes = [
       parsed.modeOfParam1,
@@ -201,7 +258,6 @@ const main = () => {
     );
     intCodes = result.intCodes;
     pointer += result.pointerDelta;
-    console.log(" iterating ...res", result.intCodes);
   }
 
   console.log("\n\n\nAfter execution:", { intCodes, index: pointer });
