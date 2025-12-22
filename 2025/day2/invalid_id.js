@@ -1,16 +1,16 @@
 import { chunk } from "@std/collections/chunk";
 
-const areAllElementsSame = (array) => {
+const areAllSequencesSame = (array) => {
   let [firstEle] = array;
   firstEle = firstEle.join("")
   return array.every((ele) => ele.join("") === firstEle);
 };
 
 const isInvalid = (id) => {
-  const length = id.toString().length;
-  for (let chunkSize = 1; chunkSize <= (length / 2); chunkSize++) {
-    const chunks = chunk(id.toString(), chunkSize);
-    if (areAllElementsSame(chunks)) {
+  const idString = id.toString();
+  for (let chunkSize = 1; chunkSize <= (idString.length / 2); chunkSize++) {
+    const chunks = chunk(idString, chunkSize);
+    if (areAllSequencesSame(chunks)) {
       return true;
     }
   }
