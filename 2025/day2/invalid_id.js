@@ -2,7 +2,7 @@ import { chunk } from "@std/collections/chunk";
 
 const areAllSequencesSame = (array) => {
   let [firstEle] = array;
-  firstEle = firstEle.join("")
+  firstEle = firstEle.join("");
   return array.every((ele) => ele.join("") === firstEle);
 };
 
@@ -17,7 +17,6 @@ const isInvalid = (id) => {
   return false;
 };
 
-
 const sumOfInvalidIDsInARange = (start, end) => {
   let sum = 0;
   for (let id = start; id <= end; id++) {
@@ -28,9 +27,8 @@ const sumOfInvalidIDsInARange = (start, end) => {
   return sum;
 };
 
-const parseInput = () => {
+const parseInput = (input) => {
   const parsedRanges = [];
-  const input = Deno.readTextFileSync("./puzzle_input.txt");
   const ranges = input.split(",");
   for (const range of ranges) {
     const startAndEnd = range.split("-").map((num) => parseInt(num));
@@ -40,7 +38,9 @@ const parseInput = () => {
 };
 
 const main = () => {
-  const ranges = parseInput();
+  const fileContents = Deno.readTextFileSync("./puzzle_input.txt");
+  const ranges = parseInput(fileContents);
+  
   let totalSum = 0;
   for (const range of ranges) {
     const [start, end] = range;
