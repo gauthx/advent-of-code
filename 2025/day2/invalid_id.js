@@ -1,28 +1,27 @@
-const isEven = (num) => !(num & 1);
+import { chunk } from "@std/collections/chunk";
 
-const toDigits = (num) => num.toString().split("");
-
-const hasEvenNoOfDigits = (digits) => isEven(digits.length);
-
-const areHalvesEqual = (digits) => {
-  const firstHalf = digits.slice(0, digits.length / 2).join("");
-  const secondHalf = digits.slice(digits.length / 2).join("");
-
-  return firstHalf === secondHalf;
+const areAllElementsSame = (array) => {
+  let [firstEle] = array;
+  firstEle = firstEle.join("")
+  return array.every((ele) => ele.join("") === firstEle);
 };
 
-const isInvalidID = (id) => {
-  const digits = toDigits(id);
-  if (hasEvenNoOfDigits(digits)) {
-    return areHalvesEqual(digits);
+const isInvalid = (id) => {
+  const length = id.toString().length;
+  for (let chunkSize = 1; chunkSize <= (length / 2); chunkSize++) {
+    const chunks = chunk(id.toString(), chunkSize);
+    if (areAllElementsSame(chunks)) {
+      return true;
+    }
   }
   return false;
 };
 
+
 const sumOfInvalidIDsInARange = (start, end) => {
   let sum = 0;
   for (let id = start; id <= end; id++) {
-    if (isInvalidID(id)) {
+    if (isInvalid(id)) {
       sum += id;
     }
   }
